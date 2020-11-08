@@ -2,13 +2,12 @@ package com.example.cfthomework3
 
 import android.os.Handler
 import android.os.Looper
-import android.widget.TextView
 import java.util.*
 
 class CustomTimer(
-    private val timerText: TextView,
     name: String,
-    var seconds: Int
+    seconds: Int,
+    private val callback: (String) -> Unit
 ) : Thread(name) {
 
     companion object {
@@ -26,7 +25,7 @@ class CustomTimer(
                 timeLeftFormatted = setText(secondsCounter)
 
                 handler.post {
-                    timerText.text = timeLeftFormatted
+                    callback(timeLeftFormatted)
                 }
                 sleep(1000)
                 secondsCounter--

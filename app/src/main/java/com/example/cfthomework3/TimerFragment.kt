@@ -10,17 +10,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.timer_fragment.*
 
-
 class TimerFragment(private val mContext: Context) : Fragment() {
 
     private var isRunning = false
-    private var name = "Таймер"
-    private val startWork = "Возобновить работу"
-    private val stopWork = "Поставить на паузу"
     private var customTimer: CustomTimer? = null
 
     companion object {
         fun newInstance(context: Context) = TimerFragment(context)
+        private const val startWork = "Возобновить работу"
+        private const val stopWork = "Поставить на паузу"
+        private const val name = "Таймер"
     }
 
     override fun onCreateView(
@@ -52,7 +51,7 @@ class TimerFragment(private val mContext: Context) : Fragment() {
         } else {
             isRunning = false
             hideProgressBar()
-            timer_button.text = startWork
+            timer_button.text = Companion.startWork
             customTimer?.stopTimer()
         }
     }
@@ -61,14 +60,20 @@ class TimerFragment(private val mContext: Context) : Fragment() {
         showProgressBar()
         customTimer = if (timer_edit_text.text.isNotBlank())
             CustomTimer(
-                timer_text, name,
+                name,
                 timer_edit_text.text.toString().toInt() * 60
             )
+            {
+                timer_text.text = CustomTimer.timeLeftFormatted
+            }
         else
             CustomTimer(
-                timer_text, name,
+                name,
                 60
             )
+            {
+                timer_text.text = CustomTimer.timeLeftFormatted
+            }
         timer_edit_text.visibility = View.INVISIBLE
         customTimer?.start()
     }
@@ -90,7 +95,7 @@ class TimerFragment(private val mContext: Context) : Fragment() {
 
     private fun getInfoOfTime(): Int {
         val prefs: SharedPreferences = mContext.getSharedPreferences("prefs", MODE_PRIVATE)
-        return if(prefs.contains("leftTimeInSeconds"))
+        return if (prefs.contains("leftTimeInSeconds"))
             prefs.getInt("leftTimeInSeconds", 0)
         else 0
     }
